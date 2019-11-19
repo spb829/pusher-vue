@@ -11,6 +11,9 @@
   ],
   "scripts": {
     "build": "webpack --mode=production --progress --hide-modules",
+		"publish-minor": "npm run build && git add . && git commit -m \"Minor updates\" && npm version minor && npm publish",
+		"publish-patch": "npm run build && npm version patch && npm publish",
+		"publish-major": "npm run build && npm version major && npm publish",
     "test": "./node_modules/.bin/jest"
   },
   "repository": {
