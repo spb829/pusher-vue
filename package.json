@@ -1,6 +1,6 @@
 {
   "name": "pusher-vue",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "A Vue plugin for Pusher",
   "main": "dist/pusher-vue.js",
   "keywords": [
@@ -12,9 +12,12 @@
   "scripts": {
     "build": "webpack --mode=production --progress --hide-modules",
     "publish-minor": "npm run build && git add . && git commit -m \"Minor updates\" && npm version minor && npm publish",
-    "publish-patch": "npm run build && npm version patch && npm publish",
+    "publish-patch": "npm run build && git add . && git commit -m \"Patched\" && npm version patch && npm publish",
     "publish-major": "npm run build && npm version major && npm publish",
     "test": "./node_modules/.bin/jest"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "repository": {
     "type": "git",
