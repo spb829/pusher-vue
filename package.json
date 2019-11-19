@@ -1,0 +1,43 @@
+{
+  "name": "pusher-vue",
+  "version": "1.0.0",
+  "description": "A Vue plugin for Pusher",
+  "main": "dist/pusher-vue.js",
+  "keywords": [
+    "pusher",
+    "vue",
+    "vue.js",
+    "real-time"
+  ],
+  "scripts": {
+    "build": "webpack --mode=production --progress --hide-modules",
+    "test": "./node_modules/.bin/jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spb829/pusher-vue.git"
+  },
+  "author": "Eric Park",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/spb829/pusher-vue/issues"
+  },
+  "homepage": "https://github.com/spb829/pusher-vue#readme",
+  "dependencies": {
+    "pusher-js": "^5.0.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/plugin-proposal-class-properties": "^7.7.0",
+    "@babel/plugin-transform-classes": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "@vue/test-utils": "^1.0.0-beta.29",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^24.9.0",
+    "babel-loader": "^8.0.6",
+    "cross-env": "^6.0.3",
+    "jest": "^24.9.0",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
+  }
+}

@@ -1,0 +1,10 @@
+{
+	"presets": ["@babel/preset-env"],
+	"ignore": [],
+	"plugins": [
+		"@babel/plugin-proposal-class-properties",
+		"@babel/plugin-transform-classes"
+	],
+	"sourceMaps": true,
+	"retainLines": true
+}
