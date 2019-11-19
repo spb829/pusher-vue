@@ -16,9 +16,6 @@
     "publish-major": "npm run build && npm version major && npm publish",
     "test": "./node_modules/.bin/jest"
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/spb829/pusher-vue.git"
