@@ -7,7 +7,7 @@
 
 # PusherVue
 
-[Pusher](https://pusher.com/) for Vue.js, highly inspired by [ActionCableVue](https://github.com/mclintprojects/pusher-vue)
+[Pusher](https://pusher.com/) for Vue.js, highly inspired by [ActionCableVue](https://github.com/mclintprojects/actioncable-vue)
 
 ## TODO
 
