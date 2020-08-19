@@ -28,13 +28,17 @@ export default class Socket {
       appKey: null,
       pusher: {},
 			debug: false,
-			debugLevel: 'error'
-    };
+			debugLevel: 'error',
+			store: null
+		};
+		if (!pusher) pusher = {};
+		if (!pusher.cluster) pusher.cluster = 'ap3';
     this._appKey = appKey;
 		this._pusherOptions = pusher;
 		if (store) store.$pusher = this;
 		this._logger = new Logger(debug, debugLevel);
-		
+
+		this._connect();
 		Pusher.logToConsole = debug;
 	}
 
@@ -49,22 +53,25 @@ export default class Socket {
 		}
 
 		this._channels.subscriptions[channelName] = this._pusher.subscribe(channelName);
-		const channel = this._channels.subscriptions[channelName];
+		const subscription = this._channels.subscriptions[channelName];
 
 		// Subscribed
-		channel.bind('pusher:subscription_succeeded', () => {
+		subscription.bind('pusher:subscription_succeeded', () => {
 			this._fireChannelEvent(channelName, this._channelSubscribed);
 		});
 		// Subscribe Error
-		channel.bind('pusher:subscription_error', () => {
+		subscription.bind('pusher:subscription_error', () => {
 			this._fireChannelEvent(channelName, this._subscriptionRejected);
 		});
 
-		const binds = this.getChannel(channelName)?.bind // => Object { key: function() }
+		if (!this._channels.hasOwnProperty(channelName)) return;
+		const channel = this._channels[channelName];
+
+		const binds = channel.bind // => Object { key: function() }
 		if (!binds) return;
 
 		for (const eventName of Object.keys(binds)) {
-			channel.bind(eventName, (data) => {
+			subscription.bind(eventName, (data) => {
 				this._fireChannelEvent(channelName, this._channelReceived, eventName, data);
 			});
 		}
@@ -214,17 +221,9 @@ export default class Socket {
 	 * @param {Object} data - The data passed from the Pusher server channel
 	 */
 	_fireChannelEvent(channelName, callback, eventName, data) {
-		const channel = this.getChannel(channelName);
+		if (!this._channels.hasOwnProperty(channelName)) return;
+		const channel = this._channels[channelName];
 
 		if (channel) callback.call(this, channel, eventName, data);
-	}
-
-	/**
-	 * Get Channel Object by name
-	 */
-	getChannel(channelName) {
-		if (!this._channels.hasOwnProperty(channelName)) return undefined;
-
-		return this._channels[channelName];
 	}
 }
