@@ -2,7 +2,7 @@
   "name": "pusher-vue",
   "version": "1.0.5",
   "description": "A Vue plugin for Pusher",
-  "main": "dist/pusher-vue.js",
+  "main": "src/index.js",
   "keywords": [
     "pusher",
     "vue",

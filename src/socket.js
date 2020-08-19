@@ -35,7 +35,7 @@ export default class Socket {
 		if (store) store.$pusher = this;
 		this._logger = new Logger(debug, debugLevel);
 		
-		this.initializePusher();
+		Pusher.logToConsole = debug;
 	}
 
 	/**
@@ -157,7 +157,7 @@ export default class Socket {
 	 * Connects to a Pusher server
 	 */
 	_connect() {
-		if (typeof this._appKey === 'string')
+		if (typeof this._appKey !== 'string')
 			throw new Error('Pusher appKey is not valid. You can get your APP_KEY from the Pusher Channels dashboard.');
 		
 		this._pusher = new Pusher(this._appKey, this._pusherOptions);
