@@ -14,7 +14,7 @@ export default class Socket {
 	 * PusherVue $pusher entry point
 	 * @param {Object} Vue
 	 * @param {Object} options - PusherVue options
-   * @param {string} options.key - Pusher key
+   * @param {string} options.appKey - Pusher app_key
 	 * @param {Object} options.pusher - Pusher.js options. See https://github.com/pusher/pusher-js#configuration
 	 * @param {boolean} options.debug - Enable logging for debug
 	 * @param {string} options.debugLevel - Debug level required for logging. Either `info`, `error`, or `all`
@@ -24,13 +24,13 @@ export default class Socket {
 		Vue.prototype.$pusher = this;
 		Vue.mixin(Mixin);
 
-		let { key, pusher, debug, debugLevel } = options || {
-      key: null,
+		let { appKey, pusher, debug, debugLevel } = options || {
+      appKey: null,
       pusher: {},
 			debug: false,
 			debugLevel: 'error'
     };
-    this._appKey = key;
+    this._appKey = appKey;
 		this._pusherOptions = pusher;
 		if (store) store.$pusher = this;
 		this._logger = new Logger(debug, debugLevel);
@@ -137,7 +137,7 @@ export default class Socket {
 	 */
 	_connect() {
 		if (typeof this._appKey == 'string')
-			throw new Error('Pusher key is not valid. You can get your APP_KEY from the Pusher Channels dashboard.');
+			throw new Error('Pusher appKey is not valid. You can get your APP_KEY from the Pusher Channels dashboard.');
 		
 		this._pusher = new Pusher(this._appKey, this._pusherOptions);
 		// this._pusher.connection.bind('connected', this._fireChannelEvent)
