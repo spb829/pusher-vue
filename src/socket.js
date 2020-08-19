@@ -71,6 +71,27 @@ export default class Socket {
   }
 
 	/**
+   * Perform an event in an Pusher server channel
+   * @param {Object} whatToDo
+   * @param {string} whatToDo.channel - The name of the Pusher server channel / The custom name chosen for the component channel
+   * @param {string} whatToDo.event - The name of event to call in the Pusher server channel
+   * @param {Object} whatToDo.data - The data to pass along with the call to the event
+   */
+  perform(whatToDo) {
+    const { channel, event, data } = whatToDo;
+		this._logger.log(`Performing event '${event}' on channel '${channel}'.`, "info");
+		
+    const subscription = this._channels.subscriptions[channel];
+		if (!subscription)
+			throw new Error(`You need to be subscribed to perform event '${event}' on channel '${channel}'.`);
+		
+		const triggered = subscription.trigger(event, data);
+		this._logger.log(`Performed '${event}' on channel '${channel}'.`, "info");
+
+		return triggered;
+  }
+
+	/**
 	 * Unsubscribes from an Pusher server channel
 	 * @param {string} channelName - The name of the channel
 	 */
