@@ -60,7 +60,7 @@ export default class Socket {
 			this._fireChannelEvent(channelName, this._subscriptionRejected);
 		});
 
-		const binds = getChannel(channelName)?.bind // => Object { key: function() }
+		const binds = this.getChannel(channelName)?.bind // => Object { key: function() }
 		if (!binds) return;
 
 		for (const eventName of Object.keys(binds)) {
@@ -157,7 +157,7 @@ export default class Socket {
 	 * Connects to a Pusher server
 	 */
 	_connect() {
-		if (typeof this._appKey == 'string')
+		if (typeof this._appKey === 'string')
 			throw new Error('Pusher appKey is not valid. You can get your APP_KEY from the Pusher Channels dashboard.');
 		
 		this._pusher = new Pusher(this._appKey, this._pusherOptions);
@@ -177,7 +177,7 @@ export default class Socket {
     if (!this._channels[name]) this._channels[name] = [];
     this._addContext(context);
 
-    if (!this._channels[name].find(c => c._uid == context._uid) && this._contexts[context._uid])
+    if (!this._channels[name].find(c => c._uid === context._uid) && this._contexts[context._uid])
       this._channels[name].push(value);
 	}
 
@@ -192,12 +192,12 @@ export default class Socket {
 	/**
 	 * Component is destroyed. Removes component's channels, subscription and cached execution context.
 	 */
-	_removeChannel(name) {
+	_removeChannel(name, uid) {
 		if (this._channels[name]) {
-      this._channels[name].splice(this._channels[name].findIndex(c => c._uid == uid), 1);
+      this._channels[name].splice(this._channels[name].findIndex(c => c._uid === uid), 1);
       delete this._contexts[uid];
 
-      if (this._channels[name].length == 0 && this._channels.subscriptions[name]) {
+      if (this._channels[name].length === 0 && this._channels.subscriptions[name]) {
         this._channels.subscriptions[name].unsubscribe();
         delete this._channels.subscriptions[name];
       }
@@ -214,9 +214,9 @@ export default class Socket {
 	 * @param {Object} data - The data passed from the Pusher server channel
 	 */
 	_fireChannelEvent(channelName, callback, eventName, data) {
-		const channel = getChannel(channelName);
+		const channel = this.getChannel(channelName);
 
-		if (chennel) callback.call(this, channel, eventName, data);
+		if (channel) callback.call(this, channel, eventName, data);
 	}
 
 	/**
