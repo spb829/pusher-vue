@@ -63,7 +63,7 @@ export default class Socket {
 		const binds = getChannel(channelName)?.bind // => Object { key: function() }
 		if (!binds) return;
 
-		for(const eventName of Object.keys(binds)) {
+		for (const eventName of Object.keys(binds)) {
 			channel.bind(eventName, (data) => {
 				this._fireChannelEvent(channelName, this._channelReceived, eventName, data);
 			});
