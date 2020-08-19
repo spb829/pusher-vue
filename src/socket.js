@@ -24,7 +24,7 @@ export default class Socket {
 		Vue.prototype.$pusher = this;
 		Vue.mixin(Mixin);
 
-		let { appKey, pusher, debug, debugLevel } = options || {
+		let { appKey, pusher, debug, debugLevel, store } = options || {
       appKey: null,
       pusher: {},
 			debug: false,
