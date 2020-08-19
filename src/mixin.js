@@ -4,9 +4,9 @@ export default {
 	 */
 	mounted() {
 		if (this.$options.channels) {
-			Object.entries(this.$options.channels).forEach(entry => {
+			for(const entry of Object.entries(this.$options.channels)){
         this.$socket._addChannel(entry[0], entry[1], this);
-			});
+			}
 		}
 	},
 	/**
@@ -14,9 +14,9 @@ export default {
 	 */
 	destroyed() {
 		if (this.$options.channels) {
-			Object.keys(this.$options.channels).forEach(key =>
+			for (const key of Object.keys(this.$options.channels)) {
 				this.$socket._removeChannel(key)
-			);
+			}
 		}
 	}
 };
