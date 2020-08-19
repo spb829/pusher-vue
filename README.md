@@ -9,6 +9,8 @@
 
 [Pusher](https://pusher.com/) for Vue.js, highly inspired by [ActionCableVue](https://github.com/mclintprojects/actioncable-vue)
 
+개인적으로 사용하려고 만듬.
+
 ## TODO
 
 - test
