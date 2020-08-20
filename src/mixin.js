@@ -1,6 +1,6 @@
 export default {
   /**
-   * Retrieve channels in component once mounted.
+   * Retrieve channels in component once created.
    */
   created() {
     if (this.$options.channels || this.channels) {
@@ -22,7 +22,9 @@ export default {
 						});
 						break;
 					default:
-						this.$pusher._addChannel(entry[0], { ...entry[1] }, this);
+						const channelName = entry[0];
+						const channelObject = { ...entry[1] };
+						this.$pusher._addChannel(channelName, channelObject, this);
 				}
       }
     }
@@ -44,9 +46,36 @@ export default {
 						});
 						break;
 					default:
-						this.$pusher._removeChannel(entry[0], this._uid)
+						const channelName = entry[0];
+						this.$pusher._removeChannel(channelName, this._uid)
 				}
       }
     }
-  },
+	},
+	/**
+	 * Immediately subscribe channels once mounted if subscribeOnMount is set true
+	 */
+	mounted() {
+		if (this.$options.channels || this.channels) {
+      const channels = this.channels || this.$options.channels;
+
+      for (const entry of Object.entries(channels)) {
+				switch (entry[0]) {
+					case "computed":
+						const computedChannels = entry[1];
+						computedChannels.forEach((channel) => {
+							const channelName = channel.channelName.call(this);
+							const subscribeOnMount = channel["subscribeOnMount"];
+
+							if (subscribeOnMount) this.$pusher.subscribe(channelName);
+						});
+						break;
+					default:
+						const channelName = entry[0];
+						const subscribeOnMount = entry[1].subscribeOnMount;
+						if (subscribeOnMount) this.$pusher.subscribe(channelName);
+				}
+      }
+    }
+	}
 };
