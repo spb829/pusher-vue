@@ -1,8 +1,8 @@
 {
   "name": "pusher-vue",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A Vue plugin for Pusher",
-  "main": "src/index.js",
+  "main": "dist/pusher-vue.js",
   "keywords": [
     "pusher",
     "vue",
@@ -40,7 +40,6 @@
     "babel-loader": "^8.1.0",
     "cross-env": "^7.0.2",
     "jest": "^26.4.0",
-    "vue": "^2.6.11",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   }

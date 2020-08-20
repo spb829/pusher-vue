@@ -13,9 +13,8 @@ export default class Socket {
 	/**
 	 * PusherVue $pusher entry point
 	 * @param {Object} Vue
-	 * @param {Object} options - PusherVue options
+	 * @param {Object} options - PusherVue options + Pusher.js options. See https://github.com/pusher/pusher-js#configuration
    * @param {string} options.appKey - Pusher app_key
-	 * @param {Object} options.pusher - Pusher.js options. See https://github.com/pusher/pusher-js#configuration
 	 * @param {boolean} options.debug - Enable logging for debug
 	 * @param {string} options.debugLevel - Debug level required for logging. Either `info`, `error`, or `all`
 	 * @param {object} options.store - Vuex store
@@ -24,21 +23,21 @@ export default class Socket {
 		Vue.prototype.$pusher = this;
 		Vue.mixin(Mixin);
 
-		let { appKey, pusher, debug, debugLevel, store } = options || {
+		let { appKey, debug, debugLevel, store } = options || {
       appKey: null,
-      pusher: {},
 			debug: false,
 			debugLevel: 'error',
 			store: null
 		};
-		if (!pusher) pusher = {};
-		if (!pusher.cluster) pusher.cluster = 'ap3';
+		// set default cluster
+		if (options.cluster) options.cluster = 'ap3';
+
     this._appKey = appKey;
-		this._pusherOptions = pusher;
+		this._pusherOptions = options;
 		if (store) store.$pusher = this;
 		this._logger = new Logger(debug, debugLevel);
 
-		this._connect();
+		// this._connect();
 		Pusher.logToConsole = debug;
 	}
 
@@ -168,7 +167,22 @@ export default class Socket {
 			throw new Error('Pusher appKey is not valid. You can get your APP_KEY from the Pusher Channels dashboard.');
 		
 		this._pusher = new Pusher(this._appKey, this._pusherOptions);
+
 		// this._pusher.connection.bind('connected', this._fireChannelEvent)
+		if (!this.debug) return;
+		this._pusher.connection.bind('error', err => {
+      var seen = [];
+      const errorMessage = JSON.stringify(err, function(key, val) {
+					if (val !== null && typeof val === "object") {
+						if (seen.indexOf(val) >= 0) return;
+						seen.push(val);
+					}
+					return val;
+				});
+			
+			this._logger.log(`connection error (probably WebSocket error)! ${errorMessage}`);
+			this._logger.log(err);
+    });
 	}
 
 	/**
@@ -182,7 +196,7 @@ export default class Socket {
     value._name = name;
 
     if (!this._channels[name]) this._channels[name] = [];
-    this._addContext(context);
+		this._addContext(context);
 
     if (!this._channels[name].find(c => c._uid === context._uid) && this._contexts[context._uid])
       this._channels[name].push(value);
@@ -201,12 +215,14 @@ export default class Socket {
 	 */
 	_removeChannel(name, uid) {
 		if (this._channels[name]) {
-      this._channels[name].splice(this._channels[name].findIndex(c => c._uid === uid), 1);
+			const channelIndex = this._channels[name].findIndex(c => c._uid === uid);
+      this._channels[name].splice(channelIndex, 1);
       delete this._contexts[uid];
 
       if (this._channels[name].length === 0 && this._channels.subscriptions[name]) {
         this._channels.subscriptions[name].unsubscribe();
-        delete this._channels.subscriptions[name];
+				delete this._channels.subscriptions[name];
+				delete this._channels[name];
       }
 
       this._logger.log(`Unsubscribed from channel '${name}'.`, "info");
@@ -222,8 +238,9 @@ export default class Socket {
 	 */
 	_fireChannelEvent(channelName, callback, eventName, data) {
 		if (!this._channels.hasOwnProperty(channelName)) return;
-		const channel = this._channels[channelName];
 
-		if (channel) callback.call(this, channel, eventName, data);
+		const channels = this._channels[channelName];
+		for (const channel of channels)
+			callback.call(this, channel, eventName, data);
 	}
 }
