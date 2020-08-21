@@ -64,8 +64,8 @@ export default {
 					case "computed":
 						const computedChannels = entry[1];
 						computedChannels.forEach((channel) => {
-							const channelName = channel.channelName.call(this);
-							const subscribeOnMount = channel["subscribeOnMount"];
+              const channelName = channel.channelName.call(this);
+              const subscribeOnMount = channel.subscribeOnMount?.call(this);
 
 							if (subscribeOnMount) this.$pusher.subscribe(channelName);
 						});
