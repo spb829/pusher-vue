@@ -64,10 +64,11 @@ export default class Socket {
 		});
 
 		if (!this._channels.hasOwnProperty(channelName)) return;
-		const channel = this._channels[channelName];
+    let channel = this._channels[channelName];
+    if (Array.isArray(channel)) channel = channel[0];
 
-		const binds = channel.bind // => Object { key: function() }
-		if (!binds) return;
+		const binds = channel.bind // => Object { [key: string]: (data) => {} }
+    if (!binds) return;
 
 		for (const eventName of Object.keys(binds)) {
 			subscription.bind(eventName, (data) => {
@@ -86,11 +87,11 @@ export default class Socket {
   perform(whatToDo) {
     const { channel, event, data } = whatToDo;
 		this._logger.log(`Performing event '${event}' on channel '${channel}'.`, "info");
-		
+
     const subscription = this._channels.subscriptions[channel];
 		if (!subscription)
 			throw new Error(`You need to be subscribed to perform event '${event}' on channel '${channel}'.`);
-		
+
 		const triggered = subscription.trigger(event, data);
 		this._logger.log(`Performed '${event}' on channel '${channel}'.`, "info");
 
@@ -103,7 +104,7 @@ export default class Socket {
 	 */
 	unsubscribe(channelName) {
     const channel = this._channels.subscriptions[channelName];
-    
+
 		if (channel) {
       this._pusher.unsubscribe(channel.name);
       this._fireChannelEvent(channel.name, this._channelUnsubscribed);
@@ -147,7 +148,7 @@ export default class Socket {
 
     this._logger.log(`Subscription rejected for channel '${channel._name}'.`);
 	}
-	
+
 	/**
    * Called when a message from an Action Cable server channel is received. Calls received on the component channel
    * @param {Object} channel - The component channel
@@ -165,7 +166,7 @@ export default class Socket {
 	_connect() {
 		if (typeof this._appKey !== 'string')
 			throw new Error('Pusher appKey is not valid. You can get your APP_KEY from the Pusher Channels dashboard.');
-		
+
 		this._pusher = new Pusher(this._appKey, this._pusherOptions);
 
 		// this._pusher.connection.bind('connected', this._fireChannelEvent)
@@ -179,7 +180,7 @@ export default class Socket {
 					}
 					return val;
 				});
-			
+
 			this._logger.log(`connection error (probably WebSocket error)! ${errorMessage}`);
 			this._logger.log(err);
     });
