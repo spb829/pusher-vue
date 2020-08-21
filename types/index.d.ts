@@ -1,6 +1,7 @@
+/// <reference path="./vue.d.ts" />
 import { PluginFunction } from "vue";
 // augment typings of Vue.js
-import "./vue"
+// import "./vue"
 
 export interface PusherVueOptions {
   appKey: string,
