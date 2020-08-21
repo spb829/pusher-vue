@@ -1,6 +1,6 @@
 {
   "name": "pusher-vue",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A Vue plugin for Pusher",
   "main": "dist/pusher-vue.js",
   "files": [
