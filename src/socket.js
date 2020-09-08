@@ -72,7 +72,13 @@ export default class Socket {
 
 		for (const eventName of Object.keys(binds)) {
 			subscription.bind(eventName, (rawData) => {
-				const data = JSON.parse(rawData);
+				let data;
+				try {
+					data = JSON.parse(rawData);
+				} catch(e) {
+					data = rawData;
+				}
+				
 				this._fireChannelEvent(channelName, this._channelReceived, eventName, data);
 			});
 		}
